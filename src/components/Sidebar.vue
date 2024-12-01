@@ -75,7 +75,7 @@
 								<span v-if="feed.faviconLink" style="width: 16px; height: 16px; background-size: contain;" :style="{ 'backgroundImage': 'url(' + feed.faviconLink + ')' }" />
 							</template>
 							<template #counter>
-								<NcCounterBubble v-show="feed.updateErrorCount > 0"
+								<NcCounterBubble v-show="feed.updateErrorCount > 50"
 									v-tooltip="feed.lastUpdateError"
 									type="highlighted"
 									style="background-color: red">
@@ -92,13 +92,13 @@
 						</NcAppNavigationItem>
 					</template>
 					<template #icon>
-						<FolderAlertIcon v-if="isFolder(topLevelItem) && topLevelItem.updateErrorCount > 0" v-tooltip="t('news', 'Has feeds with errors!')" style="width: 22px; color: red" />
-						<FolderIcon v-if="isFolder(topLevelItem) && topLevelItem.updateErrorCount === 0" style="width:22px" />
+						<FolderAlertIcon v-if="isFolder(topLevelItem) && topLevelItem.updateErrorCount > 50" v-tooltip="t('news', 'Has feeds with errors!')" style="width: 22px; color: red" />
+						<FolderIcon v-if="isFolder(topLevelItem) && topLevelItem.updateErrorCount <= 50" style="width:22px" /> <!-- TODO -->
 						<RssIcon v-if="!isFolder(topLevelItem) && !topLevelItem.faviconLink" />
 						<span v-if="!isFolder(topLevelItem) && topLevelItem.faviconLink" style="height: 16px; width: 16px; background-size: contain;" :style="{ 'backgroundImage': 'url(' + topLevelItem.faviconLink + ')' }" />
 					</template>
 					<template #counter>
-						<NcCounterBubble v-if="!isFolder(topLevelItem) && topLevelItem.updateErrorCount > 0"
+						<NcCounterBubble v-if="!isFolder(topLevelItem) && topLevelItem.updateErrorCount > 50"
 							v-tooltip="topLevelItem.lastUpdateError"
 							type="highlighted"
 							style="background-color: red">
@@ -629,9 +629,9 @@ export default Vue.extend({
 				return true
 			}
 			if (this.isFolder(item)) {
-				return item.feedCount > 0 || this.isActiveFolder(item) || this.hasActiveFeeds(item) || item.updateErrorCount > 0
+				return item.feedCount > 0 || this.isActiveFolder(item) || this.hasActiveFeeds(item) || item.updateErrorCount > 50
 			} else {
-				return item.unreadCount > 0 || item.updateErrorCount > 0 || this.isActiveFeed(item)
+				return item.unreadCount > 0 || item.updateErrorCount > 50 || this.isActiveFeed(item)
 			}
 		},
 		sortedFolderFeeds(item: Feed | Folder) {
